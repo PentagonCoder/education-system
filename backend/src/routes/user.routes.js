@@ -15,9 +15,9 @@ router.post('/register', validate(registerSchema), registerUser);
 router.get('/verify-email/:token', emailVerify)
 router.post('/login', loginUser );
 router.post('/refresh-Token', refreshToken);
-router.post('/profile', verifyjwt, getProfile);
+router.get('/profile', verifyjwt, getProfile);
 router.post('/logout', verifyjwt, logoutUser);
-router.post('/admin/dashboard', verifyjwt, authorizeRoles ('admin'), adminDashboard);
+router.get('/admin/dashboard', verifyjwt, authorizeRoles ('admin'), adminDashboard);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 router.post('/forgot-password-Otp', forgotPasswordOtp);

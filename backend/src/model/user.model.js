@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const { Schema, model } = mongoose;
 
 const UserSchema = new mongoose.Schema({
-    name: {
+    fullname: {
         type: String,
         required: true
     },
@@ -73,7 +73,6 @@ UserSchema.methods.generateAccessToken = function(){
     {
       _id: this._id,
       email: this.email,
-      userName: this.userName,
       fullName: this.fullName,
     },
     process.env.ACCESS_TOKEN_SECRET,

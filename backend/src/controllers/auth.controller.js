@@ -4,6 +4,8 @@ import crypto from "crypto";
 import { sendEmail } from '../utils/sendEmail.js';
 import bcrypt from 'bcrypt';
 import { request } from 'http';
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const forgotPassword = asyncHandler ( async(req, res, ) => {
   const { email } = req.body;
@@ -18,9 +20,7 @@ const forgotPassword = asyncHandler ( async(req, res, ) => {
   const user = await User.findOne({ email });
 
   if(!user) {
-    return res.status(200).json({
-      message : "If account exists, reset email sent"
-    })
+    throw new ApiError(404, "If account exists, reset email sent");
   }
 
   user.passwordResetToken = hashedToken;
@@ -37,9 +37,7 @@ const forgotPassword = asyncHandler ( async(req, res, ) => {
     text : message
   })
 
-  res.status(200).json({
-    message : "PASSWORD RESET LINK SENT TO YOUR EMAIL"
-  })
+  res.status(200).json(new ApiResponse(200, "If account exists, reset email sent"));
 })
 
 const resetPassword = asyncHandler ( async(req, res) => {
@@ -61,9 +59,7 @@ const resetPassword = asyncHandler ( async(req, res) => {
 
   // If no user is found, the token is invalid or expired
   if(!user) {
-    return res.status(400).json({
-      message : "INVALID OR EXPIRED RESET TOKEN"
-    })
+    throw new ApiError(400, "INVALID OR EXPIRED RESET TOKEN");
   }
 
   // Hash the new password and update the user's password
@@ -71,14 +67,12 @@ const resetPassword = asyncHandler ( async(req, res) => {
   user.password = hashedNewPassword;
 
   // Clear the reset token and expiration time
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
+  user.passwordResetToken = null;
+  user.passwordResetExpires = null;
 
   await user.save();
 
-  res.status(200).json({
-    message : "PASSWORD RESET SUCCESSFUL"
-  });
+  res.status(200).json(new ApiResponse(200, "PASSWORD RESET SUCCESSFUL"));
 
 });
 
@@ -92,9 +86,7 @@ const forgotPasswordOtp = asyncHandler ( async(req, res, next) => {
   const user = await User.findOne({ email })
 
   if(!user) {
-    return res.status(200).json({
-      message : "If account exists, reset email sent"
-    })
+    throw new ApiResponse(200, "If account exists, reset email sent");
   }
   
   const hashedOTP = crypto
@@ -115,34 +107,27 @@ const forgotPasswordOtp = asyncHandler ( async(req, res, next) => {
   })
 
   
-  res.status(200).json({
-    message : "OTP SENT TO YOUR EMAIL"
-  })
+  res.status(200).json(new ApiResponse(200, "OTP SENT TO YOUR EMAIL"));
 })
 
 const resetPasswordOtp = asyncHandler( async(req, res) => {
   const { email, otp, newPassword } = req.body;
 
   if(!email || !otp || !newPassword) {
-    return res.status(400).json({
-      message : "Email, OTP and new password are required"
-    })
+    throw new ApiError(400, "Email, OTP and new password are required");
   }
 
   // Find the user by email
   const user = await User.findOne({email});
 
   if(!user) {
-    return res.status(404).json({
-      message : "Invalid request"
-    })
+    throw new ApiError(404, "Invalid request");
   }
 
   // Check if user exists, OTP is correct and not expired
   if(Date.now() > user.otpExpiry){
-    return res.status(400).json({
-    message : "OTP Expire"
-  })}
+    throw new ApiError(400, "OTP Expire");
+  }
 
   // hash the received OTP 
   const hashedOtpRecive = crypto
@@ -152,22 +137,18 @@ const resetPasswordOtp = asyncHandler( async(req, res) => {
 
   // compare hashed received OTP with stored hashed OTP
   if(hashedOtpRecive !== user.otp){
-    return res.status(400).json({
-      message : "OTP WRONG"
-    })
+    throw new ApiError(400, "OTP WRONG");
   }
   
   // Hash the new password and update the user's password
   const hashedNewPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedNewPassword;
 
-  user.otp = ""
-  user.otpExpiry = ""
+  user.otp = null
+  user.otpExpiry = null
   await user.save()
 
-  res.status(200).json({
-    message : "PASSWORD RESET SUCCESSFUL"
-  });
+  res.status(200).json(new ApiResponse(200, "PASSWORD RESET SUCCESSFUL"));
 })
 
 
