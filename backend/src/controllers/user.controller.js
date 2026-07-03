@@ -207,11 +207,11 @@ const refreshToken = asyncHandler(async (req, res) => {
 const getProfile = asyncHandler( async(req, res) => {
   res
   .status(200)
-  .json(new ApiResponse(200, "Welcome to your profile", { email: req.user.email, fullname: req.user.fullname, role: req.user.role }));
+  .json(new ApiResponse(200, { email: req.user.email, fullname: req.user.fullname, role: req.user.role }, "Welcome to your profile"));
 })
 
 const adminDashboard = asyncHandler( async(req, res) => {
-  res.status(200).json(new ApiResponse(200, `Welcome to adminDashboard, ${req.user.fullname}!`));
+  res.status(200).json(new ApiResponse(200, { fullname: req.user.fullname }, `Welcome to adminDashboard !`));
 })
 
 export { registerUser, emailVerify, loginUser, getProfile, refreshToken, logoutUser, adminDashboard };
