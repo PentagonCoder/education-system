@@ -1,10 +1,11 @@
-const authorizeRoles  = (roles)=>{
+import {ApiError} from "../utils/ApiError.js";
+
+const authorizeRoles  = (...roles)=>{
   
   return (req, res, next) => {
-    const user = req.user;
     
-    if(user.role !== roles){ 
-      return res.status(403).json({ message: "ACCESS DENIED" });
+    if(!roles.includes(req.user.role)){ 
+      throw new ApiError(403, "Unauthorized Access");
     }
     next();
   }

@@ -18,8 +18,12 @@ import { notFound } from './middlewares/notFound.middleware.js'
 import { errorHandler } from './middlewares/error.middleware.js'
 
 import userRoutes from './routes/user.routes.js'
+import assignmentRouter from "./routes/assignment.routes.js";
+import submissionRouter from "./routes/submission.routes.js";
 
 app.use('/api/users', userRoutes);
+app.use('/api/assignment', assignmentRouter)
+app.use('/api/submission', submissionRouter)
 
 app.use(notFound);
 app.use(errorHandler);

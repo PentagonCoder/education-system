@@ -6,6 +6,8 @@ import crypto from "crypto";
 import { sendEmail } from '../utils/sendEmail.js';
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import Assignment from '../model/assignment.model.js';
+import Submission from '../model/submission.model.js';
 
 const generateAccessTokenandRefreshToken = async (user) => {
   try {
@@ -46,7 +48,7 @@ const registerUser = asyncHandler( async (req, res, ) => {
     fullname: fullname,
     email,
     password: hashedPassword,
-    role: role || 'user',
+    role: role || 'student',
     verificationToken: hashedVerificationToken,
     verificationTokenExpires
   });
@@ -148,7 +150,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   // Get the user from auth middleware
   const user = req.user;
 
-  const foundUser = await User.findById(user.id);
+  const foundUser = await User.findById(user._id);
   
   if (!foundUser) {
     throw new ApiError(401, "USER NOT AUTHENTICATED");
@@ -210,8 +212,64 @@ const getProfile = asyncHandler( async(req, res) => {
   .json(new ApiResponse(200, { email: req.user.email, fullname: req.user.fullname, role: req.user.role }, "Welcome to your profile"));
 })
 
-const adminDashboard = asyncHandler( async(req, res) => {
-  res.status(200).json(new ApiResponse(200, { fullname: req.user.fullname }, `Welcome to adminDashboard !`));
+const teacherDashboard = asyncHandler( async(req, res) => {
+  const assignmentCount = await Assignment.countDocuments({teacherId: req.user._id});
+
+  const submittedAssignment = await Submission.aggregate([
+    { $match: { status: "submitted" } },
+    { $count: "total" }
+  ]);
+
+  const pendingAssignment = await Submission.aggregate([
+    { $match: { status: "pending" } },
+    { $count: "total" }
+  ]);
+
+  res.status(200).json(new ApiResponse(200, { 
+    fullname: req.user.fullname, 
+    assignmentCount: assignmentCount, 
+    submittedAssignment: submittedAssignment, 
+    pendingAssignment: pendingAssignment 
+  }, `Welcome to teacherDashboard !`));
 })
 
-export { registerUser, emailVerify, loginUser, getProfile, refreshToken, logoutUser, adminDashboard };
+const studentDashboard = asyncHandler( async(req, res) => {
+  const assignmentCount = await Assignment.countDocuments({studentId: req.user._id});
+
+  const submittedAssignment = await Submission.countDocuments({ studentId: req.user._id, status: "submitted" });
+
+  const pendingAssignment = await Submission.countDocuments({ studentId: req.user._id, status: "pending" });
+
+  const pendingAssignments = await Submission.aggregate([
+    { $match: { status: "pending" } },
+    { $project: { status: 1 } }
+  ]);
+  const submittedAssignments = await Submission.aggregate([
+    { $match: { status: "submitted" } },
+    { $project: { status: 1 } }
+
+  ]);
+  
+  // Count the number of assignments for each status
+  const assignmentCounts = await Submission.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 }
+      }
+    }
+  ]);
+
+  const submittedAssignmentCount = submittedAssignments.length;
+
+  res.status(200).json(new ApiResponse(200, { 
+    fullname: req.user.fullname, 
+    assignmentCount: assignmentCount, 
+    submittedAssignment: submittedAssignment, 
+    pendingAssignment: pendingAssignment, 
+    AssignmentCount: assignmentCounts,
+    submittedAssignmentCount: submittedAssignmentCount
+  }, `Welcome to studentDashboard !`));
+})
+
+export { registerUser, emailVerify, loginUser, getProfile, refreshToken, logoutUser, teacherDashboard, studentDashboard };

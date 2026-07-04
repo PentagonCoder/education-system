@@ -3,7 +3,7 @@ import { Router } from 'express';
 const router = Router();
 
 
-import { registerUser, emailVerify, loginUser, getProfile, refreshToken, logoutUser, adminDashboard} from '../controllers/user.controller.js';
+import { registerUser, emailVerify, loginUser, getProfile, refreshToken, logoutUser, teacherDashboard, studentDashboard} from '../controllers/user.controller.js';
 import { forgotPassword , resetPassword, forgotPasswordOtp, resetPasswordOtp} from '../controllers/auth.controller.js';
 import {verifyjwt} from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
@@ -17,19 +17,11 @@ router.post('/login', loginUser );
 router.post('/refresh-Token', refreshToken);
 router.get('/profile', verifyjwt, getProfile);
 router.post('/logout', verifyjwt, logoutUser);
-router.get('/admin/dashboard', verifyjwt, authorizeRoles ('admin'), adminDashboard);
+router.get('/teacher/dashboard', verifyjwt, authorizeRoles('teacher'), teacherDashboard);
+router.get('/student/dashboard', verifyjwt, authorizeRoles('student'), studentDashboard);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 router.post('/forgot-password-Otp', forgotPasswordOtp);
 router.post('/reset-password-Otp', resetPasswordOtp,);
-
-
-// router.delete("/delete-user", verifyJWT, isAdmin, deleteUser);
-
-// router.post('/:id', (req, res) => {
-//   const { id } = req.params;
-//   const user = users.find((u)=> u.id == id)
-//   res.send(user.username);
-// });
 
 export default router;
