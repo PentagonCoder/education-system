@@ -16,13 +16,15 @@ const createSubmission = asyncHandler(async (req, res) => {
   
   const submission = await Submission.findOne({ assignmentId, studentId: userId });
 
+  let newSubmission;
+  
   if(submission){
     submission.status = "submitted";
     submission.submittedAt = new Date();
     await submission.save();
   }
   else{
-    const newSubmission = await Submission.create({ 
+    newSubmission = await Submission.create({ 
       assignmentId,
       studentId : userId,
       status,

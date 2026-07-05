@@ -5,6 +5,11 @@ import {verifyjwt} from '../middlewares/auth.middleware.js';
 import { validateSubmissionAccess } from '../middlewares/submission.middleware.js';
 import { createSubmission, getMySubmissions, getSubmissionById } from '../controllers/submission.controller.js';
 import { authorizeRoles  } from '../middlewares/role.middleware.js';
+import { getMyAssignments } from '../controllers/assignment.controller.js';
+
+
+// Get all assignments for the authenticated user
+router.get('/:assignmentId', verifyjwt, getMyAssignments);
 
 // Create a new assignment
 router.post('/create/:assignmentId', verifyjwt,  authorizeRoles ('student'), createSubmission);

@@ -7,7 +7,7 @@ const validateAssignmentAccess = (roles = []) => {
   return asyncHandler(async (req, res, next) => {
 
   // WORKSPACE ID FROM PARAMS
-  const { assignmentId } = req.params;
+  const { assignmentId, classroomId } = req.params;
 
   // USER ID FROM AUTH MIDDLEWARE
   const userId = req.user._id;
@@ -20,7 +20,7 @@ const validateAssignmentAccess = (roles = []) => {
     throw new ApiError(404, "Assignment not found");
   }
 
-  if(roles.includes(req.user.role) && assignment.teacherId.toString() !== req.user._id.toString()){
+  if(roles.includes(req.user.role) && assignment.classroomId.toString() !== classroomId.toString()){
     throw new ApiError(403, "Unauthorized");
   }
 

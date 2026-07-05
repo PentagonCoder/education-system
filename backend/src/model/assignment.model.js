@@ -19,7 +19,12 @@ const AssignmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    }
+    },
+    classroomId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Classroom',
+        required: true
+    },
 }, { timestamps: true });
 
 const Assignment = mongoose.model('Assignment', AssignmentSchema);
