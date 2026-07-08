@@ -38,42 +38,49 @@ function Register() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(handleRegister)}>
-        <h1>Register Page</h1>
-        <input
-          type="fullname"
-          placeholder="Full Name"
-          {...register("fullname")}
-          />
-        {errors.fullname && <span>Full Name is required</span>}
-        <br />
-        <input
-          type="email"
-          placeholder="Email"
-          {...register("email")}
-          />
-        {errors.email && <span>Email is required</span>}
-        <br />
-        <input
-          type="password"
-          placeholder="Password"
-          {...register("password")}
-          />
-        {errors.password && <span>Password is required</span>}
-        <br />
-        <span>Role:</span>
-        <select {...register("role")}>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-        {errors.role && <span>Role is required</span>}
-        <br />
-        
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-      <div> {message} </div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-6 text-center">Register</h1>
+        <form className="space-y-4" onSubmit={handleSubmit(handleRegister)}>
+          <input
+            type="fullname"
+            className="w-full border rounded-lg p-3"
+            placeholder="Full Name"
+            {...register("fullname")}
+            />
+          {errors.fullname && <span>Full Name is required</span>}
+          <br />
+          <input
+            type="email"
+            className="w-full border rounded-lg p-3"
+            placeholder="Email"
+            {...register("email")}
+            />
+          {errors.email && <span>Email is required</span>}
+          <br />
+          <input
+            type="password"
+            className="w-full border rounded-lg p-3"
+            placeholder="Password"
+            {...register("password")}
+            />
+          {errors.password && <span>Password is required</span>}
+          <br />
+          <span>Role:</span>
+          <select className="w-full border rounded-lg p-3" {...register("role")}>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+          {errors.role && <span>Role is required</span>}
+          <br />
+          
+          <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3" type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </form>
+        <div className=""> {message} </div>
+      </div>
+    </div>
     </>
   );
 }
