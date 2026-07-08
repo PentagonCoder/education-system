@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 
 import {verifyjwt} from '../middlewares/auth.middleware.js';
-import { validateClassroomAccess } from '../middlewares/classromm.middleware.js';
+import { validateClassroomAccess } from '../middlewares/classroom.middleware.js';
 import { createClassroom, getMyClassrooms, getClassroomById, updateClassroom, joinClassroom, deleteClassroom } from '../controllers/classroom.controller.js';
 
 // Create a new classroom

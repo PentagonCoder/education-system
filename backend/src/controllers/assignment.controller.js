@@ -25,6 +25,7 @@ const createAssignment = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, newAssignment, "Assignment created successfully"));
 })
 
+//but we are not using this function in the frontend, so we can remove it for now. We can add it later if needed.
 const getMyAssignments = asyncHandler(async (req, res) => {
   //get userId from request token 
   const teacherId = req.user._id;
@@ -40,7 +41,7 @@ const getMyAssignments = asyncHandler(async (req, res) => {
 
 const getMyAssignmentsByClassroom = asyncHandler(async (req, res) => {
   //get userId from request token 
-  const teacherId = req.user._id;
+  const userId = req.user._id;
   const { classroomId } = req.params;
   //find assignments for the user
   const assignments = await Assignment.find({
@@ -84,4 +85,4 @@ const deleteAssignment = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "Assignment deleted successfully"));
 })
 
-export { createAssignment, getMyAssignments, getAssignmentById, updateAssignment, deleteAssignment }
+export { createAssignment, getMyAssignments, getAssignmentById, updateAssignment, deleteAssignment,getMyAssignmentsByClassroom }

@@ -92,8 +92,12 @@ const updateClassroom = asyncHandler(async (req, res) => {
 // })
 
 const joinClassroom = asyncHandler(async (req, res) =>{
-  const { invitationToken } =req.body; 
+  const {invitationToken} = req.body
   const  userId  = req.user._id;
+
+  if (!invitationToken?.trim()) {
+    throw new ApiError(400, "Invitation token is required");
+  }
 
   //find the classroom by invitation token
   const classroom = await Classroom.findOne({ code : invitationToken })
