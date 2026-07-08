@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import api from "../api/axios";
+import api from "../../api/axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../store/authStore";
-import { useAuth } from "../hooks/useAuth";
+import useAuthStore from "../../store/authStore";
+import { useAuth } from "../../hooks/useAuth";
 
 function Login() {
 
