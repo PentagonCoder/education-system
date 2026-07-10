@@ -29,11 +29,12 @@ import userRoutes from './routes/user.routes.js'
 import assignmentRouter from "./routes/assignment.routes.js";
 import submissionRouter from "./routes/submission.routes.js";
 import classroomRouter from "./routes/classroom.routes.js";
-
+import aiRouter from "./routes/ai.routes.js";
 
 app.use('/api/users', userRoutes);
 app.use('/api/classroom', classroomRouter);
-app.use('/api/assignment', assignmentRouter)
+app.use('/api/assignment', assignmentRouter);
+app.use('/api/ai', aiRouter);
 app.use('/api/submission', submissionRouter)
 
 app.use(notFound);

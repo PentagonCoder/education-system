@@ -40,6 +40,12 @@ function Sidebar() {
         >
           Settings
         </Link>
+        <Link
+            to="/ai"
+            className="hover:bg-slate-700 px-4 py-2 rounded-lg"
+        >
+            🤖 AI Assistant
+        </Link>
       </nav>
     </aside>
   );

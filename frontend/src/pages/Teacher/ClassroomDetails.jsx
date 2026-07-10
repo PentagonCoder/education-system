@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 // import Assigment from "./CreateAssignment";
 import { createAssignment, fetchMyAssignments } from "../../services/assignmentService";
+import AiAssistant from "../../components/AI/AiAssistant";
 
 function ClassroomDetails() {
   const [userClassrooms, setUserClassrooms] = useState(null);
@@ -68,6 +69,8 @@ function ClassroomDetails() {
         <span>{userClassrooms?.code}</span>
       </div>
     </div>
+
+    <AiAssistant classroomId={classroomId}/>
 
     {/* Create Assignment */}
     <div className="bg-white rounded-xl shadow-md border p-6">
@@ -135,6 +138,8 @@ function ClassroomDetails() {
       </form>
 
     </div>
+
+
 
     {/* Assignment List */}
 
