@@ -7,7 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { createClassroomService } from '../Services/classroom.service.js';
 import { createAssignmentService } from '../Services/assignment.service.js';
 import Classroom from "../model/classroom.model.js";
-import { type } from "os";
+
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -46,6 +46,26 @@ If the user wants to create an assignment return:
       }
     ]
 }
+
+If the teacher wants BOTH a classroom and assignments together return:
+
+{
+  "action":"create_course",
+
+  "classroom":{
+    "name":"...",
+    "description":"..."
+  },
+
+  "assignments":[
+    {
+      "title":"...",
+      "description":"...",
+      "dueDate":"YYYY-MM-DD"
+    }
+  ]
+}
+
 If the request is normal conversation return:
 
 {
@@ -64,7 +84,7 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
   }
   try {
     response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.5-flash",
       contents: [
         {
           role: "user",
@@ -82,7 +102,7 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
   } catch (error) {
     console.error(error);
     throw new ApiError(503, "AI service is temporarily unavailable. Please try again later.");
-    }
+  }
 
   const cleanedResponse = response.text
     .replace(/```json/g, "")
@@ -118,15 +138,7 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
     if (classroom.teacherId.toString() !== req.user._id.toString()) {
       throw new ApiError(403, "Unauthorized");
     }
-    // const assignment = result.assignments[0];
 
-    // const newAssignment = await createAssignmentService(
-    //   req.user._id, 
-    //   classroomId, 
-    //   assignment.title,
-    //   assignment.description,
-    //   assignment.dueDate
-    // );
     const createdAssignments = [];
 
     for (const assignment of result.assignments) {
@@ -154,6 +166,44 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
     );
 
     // return res.status(201).json(new ApiResponse(201, newAssignment, "Assignment created by AI"));
+  }
+
+  if (result.action === "create_course") {
+
+      // Create classroom first
+      const classroom = await createClassroomService(
+        req.user._id,
+        result.classroom.name,
+        result.classroom.description
+      );
+
+      const createdAssignments = [];
+
+      for (const assignment of result.assignments) {
+
+        const newAssignment =
+          await createAssignmentService(
+            req.user._id,
+            classroom._id,
+            assignment.title,
+            assignment.description,
+            assignment.dueDate
+          );
+
+        createdAssignments.push(newAssignment);
+      }
+
+      return res.json(
+        new ApiResponse(
+          201,
+          {
+            type: "course",
+            classroom,
+            assignments: createdAssignments,
+          },
+          "Course created successfully"
+        )
+      );
   }
 
   res.status(200).json(new ApiResponse(200, result, "AI response fetched successfully"));
