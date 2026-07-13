@@ -17,91 +17,85 @@ const ai = new GoogleGenAI({
 const getMyAiResponse = asyncHandler( async(req, res) => {
 
   const { prompt, classroomId } = req.body;
+  
+  if (!prompt) throw new ApiError(400, "Prompt is required");
+  
 
-  let response;
-  if (!prompt) {
-    throw new ApiError(400, "Prompt is required");
-  }
+  // let response;
 
   try {
-    response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-
-      config: {
-        tools,
+    const contents = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: prompt,
+          },
+        ],
       },
+    ];
 
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
+    while (true) {
+
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+
+        config: {
+          tools,
         },
-      ],
-    });
+
+        contents,
+      });
+
+      const functionCall = response.functionCalls?.[0];
+
+      if (!functionCall) {
+
+        return res.json(
+          new ApiResponse(
+            200,
+            {
+              message: response.text,
+            },
+            "Done"
+          )
+        );
+
+      }
+
+      const result = await executeTool(functionCall, req);
+
+      contents.push({
+        role: "model",
+        parts: [
+          {
+            functionCall,
+          },
+        ],
+      });
+
+      contents.push({
+        role: "user",
+        parts: [
+          {
+            functionResponse: {
+              name: functionCall.name,
+              response: result,
+            },
+          },
+        ],
+      });
+
+    }    
     
   } catch (error) {
     console.error(error);
     throw new ApiError(503, "AI service is temporarily unavailable. Please try again later.");
   }
 
-  console.log(response.functionCalls);
+  
 
-  const functionCall = response.functionCalls?.[0];
-
-  switch (functionCall.name) {
-
-    case "createClassroom":{
-
-      const { name, description } = functionCall.args;
-
-      const classroom = await createClassroomService( req.user._id, name, description );
-
-      return res.status(200).json(new ApiResponse(
-        200, 
-        {
-          type: "classroom", 
-          classroom
-        }, 
-        "Classroom created successfully"
-      ));
-    }
-
-    case "createAssignment": {
-
-      const {
-        classroomId,
-        title,
-        description,
-        dueDate,
-      } = functionCall.args;
-
-      const assignment =
-        await createAssignmentService(
-          req.user._id,
-          classroomId,
-          title,
-          description,
-          dueDate
-        );
-
-      return res.json(
-        new ApiResponse(
-          201,
-          {
-            type: "assignment",
-            assignment,
-          },
-          "Assignment created"
-        )
-      );
-    }
-
-  }
-  res.status(200).json(new ApiResponse(200, {message: response.text}, "AI response fetched successfully"));
+  // res.status(200).json(new ApiResponse(200, {message: response.text}, "AI response fetched successfully"));
 })
 
 export { getMyAiResponse }
