@@ -41,7 +41,7 @@ const getMySubmissions = asyncHandler(async (req, res) => {
 
   //find assignments for the user
   const submission = await Submission.find({
-    studentId, assignmentId
+    assignmentId
   }).populate("studentId", "fullname email");
 
   res.status(201).json(new ApiResponse(201, submission, "All The Submission fetched successfully",))

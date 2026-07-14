@@ -1,11 +1,45 @@
+// import { create } from "zustand";
+
+// const useAuthStore = create((set) => ({
+//   user: null,
+
+//   login: (userData) => set({ user: userData }),
+
+//   logout: () => set({ user: null }),
+// }));
+
+// export default useAuthStore;
+
+
 import { create } from "zustand";
+import { fetchProfile, logoutRequest } from "../services/authService";
 
 const useAuthStore = create((set) => ({
-  user: null,
+  user: null, 
+  isAuthenticated: false,
+  isLoading: true,
 
-  login: (userData) => set({ user: userData }),
+  checkAuth: async () => {
+    try {
+      const res = await fetchProfile();
+      set({ user: res.data, isAuthenticated: true, isLoading: false });
+    } catch (err) {
+      set({ user: null, isAuthenticated: false, isLoading: false });
+    }
+  },
 
-  logout: () => set({ user: null }),
+  setUser: (userData) => set({ user: userData, isAuthenticated: true, isLoading: false }),
+
+  login: (userData) => set({ user: userData, isAuthenticated: true, isLoading: false }),
+
+  logout: async () => {
+    try {
+      await logoutRequest();
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+    set({ user: null, isAuthenticated: false });
+  }
 }));
 
 export default useAuthStore;
