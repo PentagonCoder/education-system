@@ -4,10 +4,16 @@ import Sidebar from './Sidebar';
 
 function Layout() {
   return (
-    <div>
-      <Navbar />
+    <div className="flex min-h-screen bg-slate-100">
       <Sidebar />
-      <Outlet />
+
+      <div className="flex flex-col flex-1">
+        <Navbar />
+
+        <main className="p-6">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

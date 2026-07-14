@@ -40,33 +40,95 @@ function AssignmentDetail() {
   };
 
   return (
-    <div>
-      <h1>Assignment: {assignment?.title}</h1>
-      <p>{assignment?.description}</p>
-      <p>Due Date: {new Date(assignment?.dueDate).toLocaleDateString()}</p>
-      <div>
-        <h2>Submissions</h2>
-          <form onSubmit={handleSubmit(SubmiteAssignment)}>
-            <br />
-            <span>Role:</span>
-            <select {...register("status", { required: true })}>
-              <option value="submitted">Submitted</option>
-              <option value="pending">Pending</option>
-            </select>
-            {errors.status && <span>Status is required</span>}
-            <br />
-            <button type="submit">
-              Submit Assignment
-            </button>
-          </form>
-          <div>
-            {submissions}
-          </div>
+  <div className="space-y-8">
 
+    {/* Assignment Details */}
+    <div className="bg-white rounded-xl shadow-md border p-6">
+
+      <h1 className="text-3xl font-bold">
+        {assignment?.title}
+      </h1>
+
+      <p className="text-gray-600 mt-4">
+        {assignment?.description}
+      </p>
+
+      <div className="mt-6">
+        <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg">
+          Due Date:{" "}
+          {assignment?.dueDate
+            ? new Date(assignment.dueDate).toLocaleDateString()
+            : "-"}
+        </span>
       </div>
+
     </div>
-    
-  );
+
+    {/* Submit Assignment */}
+
+    <div className="bg-white rounded-xl shadow-md border p-6">
+
+      <h2 className="text-2xl font-semibold mb-6">
+        Submit Assignment
+      </h2>
+
+      {error && (
+        <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit(SubmiteAssignment)}
+        className="space-y-5"
+      >
+
+        <div>
+
+          <label className="block font-medium mb-2">
+            Submission Status
+          </label>
+
+          <select
+            {...register("status", { required: true })}
+            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="submitted">
+              Submitted
+            </option>
+
+            <option value="pending">
+              Pending
+            </option>
+          </select>
+
+          {errors.status && (
+            <p className="text-red-500 mt-2">
+              Status is required
+            </p>
+          )}
+
+        </div>
+
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
+        >
+          Submit Assignment
+        </button>
+
+      </form>
+
+      {submissions && (
+        <div className="mt-6 bg-green-100 text-green-700 p-4 rounded-lg">
+          {submissions}
+        </div>
+      )}
+
+    </div>
+
+  </div>
+);
 }
 
 export default AssignmentDetail;

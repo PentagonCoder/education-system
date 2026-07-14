@@ -39,28 +39,99 @@ function ClassroomDetailsStudent() {
   }, []);
 
   return (
-    <div>
-      <h1>classroom {userClassrooms?.name}</h1>
-      <p>{userClassrooms?.description}</p>
-      <p>{userClassrooms?.code}</p>
-      <div>
+  <div className="space-y-8">
+
+    {/* Classroom Info */}
+    <div className="bg-white border rounded-xl shadow-md p-6">
+      <h1 className="text-3xl font-bold">
+        {userClassrooms?.name}
+      </h1>
+
+      <p className="text-gray-600 mt-3">
+        {userClassrooms?.description}
+      </p>
+
+      <div className="mt-5 inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg">
+        <span className="font-semibold">
+          Classroom Code:
+        </span>
+
+        <span>{userClassrooms?.code}</span>
       </div>
-      <div>
-        {
-          assignment.map((assignment) => (
-            <div key={assignment._id}>
-              <Link to={`/student/classrooms/${classroomId}/assignments/${assignment._id}`}>
+    </div>
+
+    {/* Assignments */}
+
+    <div className="bg-white border rounded-xl shadow-md p-6">
+
+      <div className="flex justify-between items-center mb-6">
+
+        <h2 className="text-2xl font-semibold">
+          Assignments
+        </h2>
+
+        <span className="bg-gray-100 px-3 py-1 rounded-full">
+          {assignment.length} Assignment
+          {assignment.length !== 1 && "s"}
+        </span>
+
+      </div>
+
+      {assignment.length === 0 ? (
+
+        <p className="text-gray-500">
+          No assignments available.
+        </p>
+
+      ) : (
+
+        <div className="grid md:grid-cols-2 gap-5">
+
+          {assignment.map((assignment) => (
+
+            <div
+              key={assignment._id}
+              className="border rounded-xl p-5 hover:shadow-lg transition"
+            >
+
+              <h3 className="text-xl font-semibold">
                 {assignment.title}
-              </Link>
-              <p>{assignment.description}</p>
-              <p>Due Date: {new Date(assignment.dueDate).toLocaleDateString()}</p>
+              </h3>
+
+              <p className="text-gray-600 mt-3">
+                {assignment.description}
+              </p>
+
+              <p className="text-sm text-gray-500 mt-4">
+                Due:{" "}
+                {new Date(
+                  assignment.dueDate
+                ).toLocaleDateString()}
+              </p>
+
+              <div className="mt-5">
+
+                <Link
+                  to={`/student/classrooms/${classroomId}/assignments/${assignment._id}`}
+                  className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                >
+                  Open Assignment
+                </Link>
+
+              </div>
+
             </div>
-          ))
-        }
+
+          ))}
+
+        </div>
+
+      )}
+
     </div>
-    </div>
-    
-  );
+
+  </div>
+);
 }
 
 export default ClassroomDetailsStudent;

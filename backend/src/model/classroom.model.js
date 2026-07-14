@@ -6,6 +6,10 @@ const classroomSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        default: ""
+    },
     code: {
         type: String,
         default: null

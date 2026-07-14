@@ -14,13 +14,15 @@ import ClassroomDetails from "./pages/Teacher/ClassroomDetails";
 import ClassroomDetailsStudent from "./pages/Student/ClassroomDetails";
 import AssignmentDetail from "./pages/Student/AssignmentDetails";
 import AssignmentDetailTeacher from "./pages/Teacher/AssignmentDetails";
+import AIAssistant from "./pages/Ai/AIAssistant";
+
 function App() {
 
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
 
   return (
@@ -35,6 +37,7 @@ function App() {
           </ProtectedRoute>
         }
       >
+        <Route path="/ai" element={<AIAssistant />} />
         <Route path="/teacher/dashboard" element={<DashboardTeacher />} />
         <Route path="/teacher/classrooms/:classroomId" element={<ClassroomDetails />} />
         <Route path="/student/classrooms/:classroomId" element={<ClassroomDetailsStudent />} />

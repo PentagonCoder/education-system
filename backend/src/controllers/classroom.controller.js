@@ -5,24 +5,23 @@ import { sendEmail } from '../utils/sendEmail.js';
 import User from '../model/user.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { createClassroomService } from '../Services/classroom.service.js';
 
 const createClassroom = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
   const userId = req.user._id;
   
   if(!name?.trim()){
     throw new ApiError(400, "Name is required");
   }
-  const invitationCode = crypto.randomBytes(12).toString("hex");
 
-  const newClassroom = await Classroom.create({ 
+  const classroom = await createClassroomService(
+    req.user._id,
     name,
-    teacherId : userId,
-    students : [{ user: userId, role: 'teacher' }],
-    code : invitationCode
-  });
+    description
+  );
 
-  res.status(201).json(new ApiResponse(201, newClassroom, "Classroom created successfully"));
+  res.status(201).json(new ApiResponse(201, classroom, "Classroom created successfully"));
 })
 
 const getMyClassrooms = asyncHandler(async (req, res) => {

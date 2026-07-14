@@ -58,52 +58,127 @@ function DashboardTeacher() {
   };
 
   return (
-    <div>
-      <h1>Teacher Dashboard Page</h1>
-        <div>
-          <h2>User Profile</h2>
-          <p>Name: {userProfile?.data.fullname}</p>
-          <p>Email: {userProfile?.data.email}</p>
-          <p>Role: {userProfile?.data.role}</p>
-        </div>
-      <div>
-        <h1>Create Classroom Page</h1>
-          {error && <span>{error}</span>}
-          {/* <Link to="/teacher/dashboard">Back to Dashboard</Link> */}
-          <br />
-          <br />
-          <form onSubmit={handleSubmit(handleCreateClassroom)}>
-            <h1>Create Classroom</h1>
-            <input
-              type="name"
-              placeholder="name"
-              {...register("name")}
-            />
-            {errors?.name && <span>Name is required</span>}
-            <br />
-            <button type="submit">
-              Create Classroom
-            </button>
-          </form>
+  <div className="space-y-8">
+    {/* Profile */}
+    <div className="bg-white rounded-xl shadow-md border p-6">
+      <h1 className="text-3xl font-bold mb-6">
+        Teacher Dashboard
+      </h1>
 
-          {userClassrooms.length > 0 && (
-            <div>
-              <h2>My Classrooms</h2>
-              <ul>
-                {userClassrooms.map((classroom) => (
-                  <div key={classroom?._id}>
-                    <Link to={`/teacher/classrooms/${classroom._id}`}>{classroom?.name}</Link>
-                    <button onClick={() => RemoveClassroom(classroom._id)}>Remove</button>
-                  </div>
-                ))}
-              </ul>
-            </div>
-          )}
+      <h2 className="text-xl font-semibold mb-4">
+        Welcome back, {userProfile?.data.fullname} 👋
+      </h2>
 
+      <div className="space-y-2 text-gray-700">
+        {/* <p>
+          <span className="font-semibold">Name:</span>{" "}
+          {userProfile?.data.fullname}
+        </p>
+
+        <p>
+          <span className="font-semibold">Email:</span>{" "}
+          {userProfile?.data.email}
+        </p> */}
+
+        <p>
+          <span className="font-semibold">Role:</span>{" "}
+          <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded capitalize">
+            {userProfile?.data.role}
+          </span>
+        </p>
       </div>
+      <p className="text-gray-500 mt-2">
+        You have created {userClassrooms.length} classroom
+        {userClassrooms.length !== 1 && "s"}.
+      </p>
     </div>
-    
-  );
+
+    {/* Create Classroom */}
+    <div className="bg-white rounded-xl shadow-md border p-6">
+      <h2 className="text-2xl font-semibold mb-5">
+        Create Classroom
+      </h2>
+
+      {error && (
+        <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit(handleCreateClassroom)}
+        className="flex gap-4"
+      >
+        <input
+          type="text"
+          placeholder="Classroom Name"
+          {...register("name", { required: true })}
+          className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-lg transition"
+        >
+          Create
+        </button>
+      </form>
+
+      {errors?.name && (
+        <p className="text-red-500 mt-2">
+          Classroom name is required
+        </p>
+      )}
+    </div>
+
+    {/* Classroom List */}
+    <div className="bg-white rounded-xl shadow-md border p-6">
+      <h2 className="text-2xl font-semibold mb-5">
+        My Classrooms
+      </h2>
+
+      {userClassrooms.length === 0 ? (
+        <p className="text-gray-500">
+          No classrooms created yet.
+        </p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {userClassrooms.map((classroom) => (
+            <div
+              key={classroom._id}
+              className="border rounded-xl p-5 hover:shadow-lg transition"
+            >
+              <Link
+                to={`/teacher/classrooms/${classroom._id}`}
+                className="block"
+              >
+                <h3 className="text-xl font-semibold text-blue-600 hover:underline">
+                  {classroom.name}
+                </h3>
+              </Link>
+
+              <div className="mt-5 flex justify-between items-center">
+                <Link
+                  to={`/teacher/classrooms/${classroom._id}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  Open →
+                </Link>
+
+                <button
+                  onClick={() => RemoveClassroom(classroom._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+);
 }
 
 export default DashboardTeacher;

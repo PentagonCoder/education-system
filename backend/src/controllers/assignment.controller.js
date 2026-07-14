@@ -4,6 +4,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 import Assignment from '../model/assignment.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { createAssignmentService } from '../Services/assignment.service.js';
 
 const createAssignment = asyncHandler(async (req, res) => {
   const { title, description, dueDate } = req.body;
@@ -14,13 +15,7 @@ const createAssignment = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Title is required");
   }
 
-  const newAssignment = await Assignment.create({ 
-    title,
-    description,
-    dueDate : new Date(dueDate),
-    teacherId : userId,
-    classroomId : classroomId
-  });
+  const newAssignment = await createAssignmentService(userId, classroomId, title, description, dueDate);
 
   res.status(201).json(new ApiResponse(201, newAssignment, "Assignment created successfully"));
 })
