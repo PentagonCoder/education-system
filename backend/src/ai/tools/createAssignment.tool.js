@@ -8,10 +8,6 @@ export const createAssignmentTool = {
     type: "object",
 
     properties: {
-      classroomId: {
-        type: "string",
-        description: "The classroom id",
-      },
 
       title: {
         type: "string",
