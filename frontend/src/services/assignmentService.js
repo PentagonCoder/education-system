@@ -12,5 +12,8 @@ export const fetchAssignmentById = (classroomId, assignmentId) => {
   return api.get(`/api/assignment/${classroomId}/assignments/${assignmentId}`);
 }
 
+export const deleteAssignment = (classroomId, assignmentId) => {
+  return api.delete(`/api/assignment/${classroomId}/assignments/${assignmentId}`);
+};
 
 // /my-submission/:assignmentId

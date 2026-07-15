@@ -15,6 +15,7 @@ import ClassroomDetailsStudent from "./pages/Student/ClassroomDetails";
 import AssignmentDetail from "./pages/Student/AssignmentDetails";
 import AssignmentDetailTeacher from "./pages/Teacher/AssignmentDetails";
 import AIAssistant from "./pages/Ai/AIAssistant";
+import LandingPage from "./pages/LandingPage"; 
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} /> 
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />}/>
       <Route path="/verify-email/:token" element={<VerifyEmail />}/>

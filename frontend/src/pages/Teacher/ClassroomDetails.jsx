@@ -3,14 +3,14 @@ import { fetchClassroomById } from "../../services/classroomService";
 import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 // import Assigment from "./CreateAssignment";
-import { createAssignment, fetchMyAssignments } from "../../services/assignmentService";
+import { createAssignment, fetchMyAssignments, deleteAssignment } from "../../services/assignmentService";
 import AiAssistant from "../../components/AI/AiAssistant";
 
 function ClassroomDetails() {
   const [userClassrooms, setUserClassrooms] = useState(null);
   const [error, setError] = useState(null);
   const [assignment, setAssignment] = useState([]);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const {classroomId} = useParams()
   useEffect(() => {
@@ -39,6 +39,15 @@ function ClassroomDetails() {
     fetchClassroom();
   }, []);
 
+  const RemoveAssignment = async (classroomId , assignmentId) => {
+    try {
+      await deleteAssignment(classroomId, assignmentId);
+      setAssignment((prev) => prev.filter((assignment) => assignment._id !== assignmentId));
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
   const handleCreateAssignment = async (data) => {
     setError(null);
     try {
@@ -46,6 +55,7 @@ function ClassroomDetails() {
       setAssignment((prev) => [...prev, response.data.data]);
       console.log("Assignment created:", response.data);
       setError(null);
+      reset();
     } catch (err) {
       setError(err.response?.data?.message || "Create assignment failed");
     }
@@ -70,7 +80,7 @@ function ClassroomDetails() {
       </div>
     </div>
 
-    <AiAssistant classroomId={classroomId}/>
+    {/* <AiAssistant classroomId={classroomId}/> */}
 
     {/* Create Assignment */}
     <div className="bg-white rounded-xl shadow-md border p-6">
@@ -134,7 +144,6 @@ function ClassroomDetails() {
         >
           Create Assignment
         </button>
-
       </form>
 
     </div>
@@ -190,7 +199,7 @@ function ClassroomDetails() {
                 ).toLocaleDateString()}
               </p>
 
-              <div className="mt-5">
+              {/* <div className="mt-5 flex gap-3">
 
                 <Link
                   to={`/teacher/classrooms/${classroomId}/assignments/${assignment._id}`}
@@ -199,6 +208,28 @@ function ClassroomDetails() {
                   View Submissions
                 </Link>
 
+                <button
+                  onClick={() => RemoveAssignment(classroomId, assignment._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
+                >
+                  Delete
+                </button>
+
+              </div> */}
+              <div className="mt-5 flex gap-3">
+                <Link
+                  to={`/teacher/classrooms/${classroomId}/assignments/${assignment._id}`}
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                >
+                  View Submissions
+                </Link>
+
+                <button
+                  onClick={() => RemoveAssignment(classroomId, assignment._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Delete
+                </button>
               </div>
 
             </div>

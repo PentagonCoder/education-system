@@ -9,7 +9,7 @@ function DashboardTeacher() {
   const [userClassrooms, setUserClassrooms] = useState([]);
 
   const [error, setError] = useState(null);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -52,6 +52,7 @@ function DashboardTeacher() {
       setUserClassrooms((prev) => [...prev, response.data.data]);
       console.log("Classroom created:", response.data);
       setError(null);
+      reset();
     } catch (err) {
       setError(err.response?.data?.message || "Create classroom failed");
     }
@@ -114,6 +115,13 @@ function DashboardTeacher() {
           placeholder="Classroom Name"
           {...register("name", { required: true })}
           className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <input
+          type="text"
+          placeholder="Classroom Description"
+          {...register("description")}
+          className="flex-2 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
