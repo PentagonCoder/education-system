@@ -81,6 +81,11 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
       if (functionCall.name === "createAssignment") {
         functionCall.args.classroomId = agentContext.classroomId;
       }
+
+      if (functionCall.name === "createAssignments") {
+        functionCall.args.classroomId = agentContext.classroomId;
+      }
+      
       console.log(functionCall.args);
       const result = await executeTool(functionCall, req);
 

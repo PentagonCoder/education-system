@@ -32,6 +32,28 @@ export const toolRegistry = {
       assignmentId: assignment._id.toString(),
       title: assignment.title,
     };
+  },
+
+  async createAssignments(args, req) {
+
+    const created = [];
+
+    for (const assignment of args.assignments) {
+
+      const newAssignment = await createAssignmentService(
+          req.user._id,
+          args.classroomId,
+          assignment.title,
+          assignment.description,
+          assignment.dueDate
+        );
+
+      created.push(newAssignment);
+    }
+
+    return {
+      createdCount: created.length
+    };
   }
 
 };
