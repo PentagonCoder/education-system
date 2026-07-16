@@ -18,14 +18,13 @@ export async function generateWithRetry(ai, contents) {
 
             Rules:
 
-            - If the user asks to create a classroom, call createClassroom.
-            - If the user also asks for assignments, call createClassroom FIRST.
-            - Wait for the tool response.
-            - After receiving the classroom creation result, call createAssignment once for EACH assignment.
-            - Never combine multiple assignments into one tool call.
-            - Continue calling createAssignment until every assignment has been created.
-            - Only after every assignment has been created should you answer the user.
-            `,
+            - If the user wants a classroom, call createClassroom.
+            - If the user wants ONE assignment, call createAssignment.
+            - If the user wants MULTIPLE assignments, call createAssignments.
+            - Always wait for the classroom creation result before creating assignments.
+            - Never ask for classroomId.
+            - The backend automatically provides classroomId.
+            - After all tools finish, answer the user.`,
           },
 
           contents,

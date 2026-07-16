@@ -3,7 +3,7 @@ export const createAssignmentsTool = {
     name: "createAssignments",
 
     description:
-        "Create multiple assignments inside the current classroom.",
+        "Create MULTIPLE assignments in one call. Use this tool whenever the user requests two or more assignments.",
 
     parameters: {
 

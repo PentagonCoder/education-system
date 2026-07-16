@@ -1,11 +1,12 @@
-import { createAssignmentTool, createClassroomTool } from "./tools/index.js";
+import { createAssignmentTool, createClassroomTool, createAssignmentsTool} from "./tools/index.js";
 
 
 export const tools = [
   {
     functionDeclarations: [
-      createAssignmentTool,
+      // createAssignmentTool,
       createClassroomTool,
+      createAssignmentsTool
     ],
   },
 ];

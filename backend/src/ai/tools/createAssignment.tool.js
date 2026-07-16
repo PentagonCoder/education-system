@@ -2,7 +2,7 @@ export const createAssignmentTool = {
   name: "createAssignment",
 
   description:
-    "Create an assignment inside a classroom.",
+    "Create ONE assignment only. Do not use this tool when multiple assignments are requested.",
 
   parameters: {
     type: "object",
