@@ -53,6 +53,29 @@ function AssignmentDetail() {
         {assignment?.description}
       </p>
 
+      <p className="text-slate-600 mb-4">
+        {assignment?.attachedFile && (
+          <img
+            src={assignment.attachedFile.replace(/^http:/, "https:")}
+            alt="Attached"
+            className="max-w-full h-auto mb-2"
+          />
+        )}
+      </p>
+
+      <p className="text-slate-600 mb-4">
+        {assignment?.attachedFile && (
+          <a
+            href={assignment.attachedFile.replace(/^http:/, "https:")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            Download Presentation
+          </a>
+        )}
+      </p>
+
       <div className="mt-6">
         <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg">
           Due Date:{" "}

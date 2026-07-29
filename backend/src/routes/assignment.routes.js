@@ -5,9 +5,10 @@ import {verifyjwt} from '../middlewares/auth.middleware.js';
 import { validateAssignmentAccess } from '../middlewares/assignment.middleware.js';
 import { createAssignment, getMyAssignments, getAssignmentById, updateAssignment, deleteAssignment,getMyAssignmentsByClassroom } from '../controllers/assignment.controller.js';
 import { authorizeRoles  } from '../middlewares/role.middleware.js';
+import { upload } from '../middlewares/multer.middleware.js';
 
 // Create a new assignment
-router.post('/:classroomId/create', verifyjwt, authorizeRoles ('teacher'), createAssignment);
+router.post('/:classroomId/create', verifyjwt, authorizeRoles ('teacher'), upload.single('attachedFile'), createAssignment);
 
 // Get all assignments for the authenticated user
 router.get('/:classroomId/my-assignments', verifyjwt, getMyAssignmentsByClassroom);

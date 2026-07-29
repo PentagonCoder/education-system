@@ -10,12 +10,13 @@ const createAssignment = asyncHandler(async (req, res) => {
   const { title, description, dueDate } = req.body;
   const userId = req.user._id;
   const { classroomId } = req.params;
+  const attachedFile = req.file ? req.file.path : null;
   
   if(!title?.trim()){
     throw new ApiError(400, "Title is required");
   }
 
-  const newAssignment = await createAssignmentService(userId, classroomId, title, description, dueDate);
+  const newAssignment = await createAssignmentService(userId, classroomId, title, description, dueDate, attachedFile);
 
   res.status(201).json(new ApiResponse(201, newAssignment, "Assignment created successfully"));
 })

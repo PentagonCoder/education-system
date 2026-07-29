@@ -10,9 +10,11 @@ function ClassroomDetails() {
   const [userClassrooms, setUserClassrooms] = useState(null);
   const [error, setError] = useState(null);
   const [assignment, setAssignment] = useState([]);
+  const [file, setFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-  const {classroomId} = useParams()
+  const { classroomId } = useParams();
   useEffect(() => {
 
     const fetchClassroom = async () => {
@@ -50,14 +52,25 @@ function ClassroomDetails() {
 
   const handleCreateAssignment = async (data) => {
     setError(null);
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("dueDate", data.dueDate);
+    if (file) formData.append("attachedFile", file);
+
     try {
-      const response = await createAssignment(classroomId,data);
+      const response = await createAssignment(classroomId, formData);
       setAssignment((prev) => [...prev, response.data.data]);
       console.log("Assignment created:", response.data);
       setError(null);
       reset();
+      setFile(null);
     } catch (err) {
       setError(err.response?.data?.message || "Create assignment failed");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -137,12 +150,20 @@ function ClassroomDetails() {
             Due Date is required
           </p>
         )}
-
+        <label>Upload Presentation <span >(optional)</span></label>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+          />
+            
+        {/* {file && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">✓ Selected: {file.name}</p>} */}
+        
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+          disabled={isSubmitting}
+          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-2 rounded-lg transition"
         >
-          Create Assignment
+          {isSubmitting ? "Creating..." : "Create Assignment"}
         </button>
       </form>
 

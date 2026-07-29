@@ -15,6 +15,10 @@ const AssignmentSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    attachedFile: {
+        type: String,
+        required: false
+    },
     teacherId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
