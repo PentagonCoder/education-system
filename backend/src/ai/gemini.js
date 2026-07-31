@@ -118,9 +118,6 @@ const getMyAiResponse = asyncHandler( async(req, res) => {
     throw new ApiError(503, "AI service is temporarily unavailable. Please try again later.");
   }
 
-  
-
-  // res.status(200).json(new ApiResponse(200, {message: response.text}, "AI response fetched successfully"));
 })
 
 export { getMyAiResponse }

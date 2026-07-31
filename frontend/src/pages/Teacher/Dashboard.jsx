@@ -20,12 +20,18 @@ function DashboardTeacher() {
     fetchUserClassrooms();
   }, []);
 
+  const onSubmit = async(data) => {
+    await handleCreateClassroom(data);
+    reset();
+  };
+  
+
   return (
     <div className="space-y-8">
 
       <Profile profile={profile?.data} classroomCount={classrooms.length} />
 
-      <CreateClassroomForm onSubmit={handleSubmit(handleCreateClassroom)} register={register} errors={errors} error={error} />
+      <CreateClassroomForm onSubmit={handleSubmit(onSubmit)} register={register} errors={errors} error={error} />
       
       <ClassroomList userClassrooms={classrooms} onDelete={RemoveClassroom} />
 
