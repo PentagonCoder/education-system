@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { fetchProfile } from "../../services/authService";
-import { fetchMyClassrooms, createClassroom, deleteClassroom } from "../../services/classroomService";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { Profile } from "../../components/Profile";
@@ -13,11 +12,11 @@ function DashboardTeacher() {
   const [error, setError] = useState(null);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const { profile, fetchUserProfile } = useProfile();
-  const { classrooms, fetchUserClassrooms, handleCreateClassroom, RemoveClassroom } = useClassroom();
+  const { classrooms, fetchUserTeacherClassrooms, handleCreateClassroom, RemoveClassroom } = useClassroom();
 
   useEffect(() => {
     fetchUserProfile();
-    fetchUserClassrooms();
+    fetchUserTeacherClassrooms();
   }, []);
 
   const onSubmit = async(data) => {

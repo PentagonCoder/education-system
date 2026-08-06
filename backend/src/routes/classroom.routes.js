@@ -3,13 +3,14 @@ const router = Router();
 
 import {verifyjwt} from '../middlewares/auth.middleware.js';
 import { validateClassroomAccess } from '../middlewares/classroom.middleware.js';
-import { createClassroom, getMyClassrooms, getClassroomById, updateClassroom, joinClassroom, deleteClassroom } from '../controllers/classroom.controller.js';
+import { createClassroom, getMyClassroomsForTeacher, getMyClassroomsForStudent, getClassroomById, updateClassroom, joinClassroom, deleteClassroom } from '../controllers/classroom.controller.js';
 
 // Create a new classroom
 router.post('/create', verifyjwt, createClassroom);
 
 // Get all classrooms for the authenticated student or teacher
-router.get('/my-classrooms', verifyjwt, getMyClassrooms);
+router.get('/teacher/my-classrooms', verifyjwt, getMyClassroomsForTeacher );
+router.get('/student/my-classrooms', verifyjwt, getMyClassroomsForStudent );
 
 // Get a specific classroom by ID
 router.get('/:classroomId', verifyjwt, validateClassroomAccess(['student','teacher']), getClassroomById);

@@ -4,7 +4,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 import Assignment from '../model/assignment.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { createAssignmentService } from '../Services/assignment.service.js';
+import { createAssignmentService } from '../services/assignment.service.js';
 
 const createAssignment = asyncHandler(async (req, res) => {
   const { title, description, dueDate } = req.body;

@@ -4,8 +4,12 @@ export const createClassroom = (name) => {
   return api.post("/api/classroom/create", name);
 }
 
-export const fetchMyClassrooms = () => {
-  return api.get("/api/classroom/my-classrooms");
+export const fetchTeacherClassrooms = () => {
+  return api.get("/api/classroom/teacher/my-classrooms");
+};
+
+export const fetchStudentClassrooms = () => {
+  return api.get("/api/classroom/student/my-classrooms");
 };
 
 export const fetchClassroomById = (classroomId) => {

@@ -1,5 +1,5 @@
-import { createClassroomService } from "../Services/classroom.service.js";
-import { createAssignmentService } from "../Services/assignment.service.js";
+import { createClassroomService } from "../services/classroom.service.js";
+import { createAssignmentService } from "../services/assignment.service.js";
 
 export const toolRegistry = {
 

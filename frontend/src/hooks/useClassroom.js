@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { fetchMyClassrooms, createClassroom, deleteClassroom, joinClassroom } from "../services/classroomService";
+import { fetchTeacherClassrooms, fetchStudentClassrooms, createClassroom, deleteClassroom, joinClassroom } from "../services/classroomService";
 
 
 export function useClassroom() {
   const [classrooms, setClassrooms] = useState([]);
   const [error, setError] = useState(null);
 
-  const fetchUserClassrooms = async () => {
+  const fetchUserTeacherClassrooms = async () => {
     try {
-      const response = await fetchMyClassrooms();
+      const response = await fetchTeacherClassrooms();  
+      setClassrooms(response.data.data);
+      console.log("User classrooms fetched:", response.data);
+    } catch (error) {
+      console.error("Error fetching user classrooms:", error);
+    }
+  };
+
+  const fetchUserStudentClassrooms = async () => {
+    try {
+      const response = await fetchStudentClassrooms();  
       setClassrooms(response.data.data);
       console.log("User classrooms fetched:", response.data);
     } catch (error) {
@@ -51,5 +61,5 @@ export function useClassroom() {
     }
   };  
 
-  return { classrooms, error, fetchUserClassrooms, handleCreateClassroom, RemoveClassroom, joinClassroombyCode };
+  return { classrooms, error, fetchUserTeacherClassrooms, fetchUserStudentClassrooms, handleCreateClassroom, RemoveClassroom, joinClassroombyCode };
 } 

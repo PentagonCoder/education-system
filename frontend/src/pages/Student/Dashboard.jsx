@@ -4,7 +4,6 @@ import { fetchProfile } from "../../services/authService";
 import { useForm } from "react-hook-form";
 import { joinClassroom } from "../../services/classroomService";
 import { Link } from "react-router-dom";
-import { fetchMyClassrooms } from "../../services/classroomService";
 import { Profile } from "../../components/Profile";
 import { useProfile } from "../../hooks/useProfile";
 import { useClassroom } from "../../hooks/useClassroom";
@@ -14,12 +13,12 @@ function DashboardStudent() {
   
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { profile, fetchUserProfile } = useProfile();
-  const { classrooms, error, fetchUserClassrooms, joinClassroombyCode } = useClassroom();
+  const { classrooms, error, fetchUserStudentClassrooms, joinClassroombyCode } = useClassroom();
 
   useEffect(() => {
 
     fetchUserProfile();
-    fetchUserClassrooms();
+    fetchUserStudentClassrooms();
   }, []);
 
   return (

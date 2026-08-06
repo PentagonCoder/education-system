@@ -5,34 +5,33 @@ import { sendEmail } from '../utils/sendEmail.js';
 import User from '../model/user.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { createClassroomService } from '../Services/classroom.service.js';
+import { 
+  createClassroomService, 
+  getTeacherClassroomsService, 
+  getStudentClassroomsService, 
+} from '../services/classroom.service.js';
 
 const createClassroom = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
-  const userId = req.user._id;
-  
-  if(!name?.trim()){
-    throw new ApiError(400, "Name is required");
-  }
 
-  const classroom = await createClassroomService(
-    req.user._id,
-    name,
-    description
-  );
+  const classroom = await createClassroomService({
+    teacherId: req.user._id,
+    ...req.body
+  });
 
   res.status(201).json(new ApiResponse(201, classroom, "Classroom created successfully"));
 })
 
-const getMyClassrooms = asyncHandler(async (req, res) => {
+const getMyClassroomsForTeacher = asyncHandler(async (req, res) => {
+
+  const classroom = await getTeacherClassroomsService(req.user._id);
+
+  res.status(201).json(new ApiResponse(201, classroom, "All The Classroom fetched successfully"));
+})
+
+const getMyClassroomsForStudent = asyncHandler(async (req, res) => {
   //get userId from request token 
-  const userId = req.user._id;
-
-  //find classrooms for the user
-  const classroom = await Classroom.find({
-    "students.user" : userId
-  }).populate("teacherId", "fullname email");
-
+  const classroom = await getStudentClassroomsService(req.user._id);
+  
   res.status(201).json(new ApiResponse(201, classroom, "All The Classroom fetched successfully"));
 })
 
@@ -159,4 +158,4 @@ const deleteClassroom = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "Classroom deleted successfully"));
 })
 
-export { createClassroom, getMyClassrooms, getClassroomById, updateClassroom, joinClassroom, deleteClassroom }
+export { createClassroom, getMyClassroomsForTeacher, getMyClassroomsForStudent, getClassroomById, updateClassroom, joinClassroom, deleteClassroom }
