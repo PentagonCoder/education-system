@@ -35,6 +35,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Backend is alive 🚀" });
 });
 
+app.get("/CiCd", (req, res) => {
+  res.json({ message: "Backend is alive and running CI/CD 🚀" });
+});
+
 app.use('/api/users', userRoutes);
 app.use('/api/classroom', classroomRouter);
 app.use('/api/assignment', assignmentRouter);
