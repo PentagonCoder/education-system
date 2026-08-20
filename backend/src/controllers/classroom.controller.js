@@ -9,6 +9,8 @@ import {
   createClassroomService, 
   getTeacherClassroomsService, 
   getStudentClassroomsService, 
+  joinClassroomService,
+  deleteClassroomService
 } from '../services/classroom.service.js';
 
 const createClassroom = asyncHandler(async (req, res) => {
@@ -55,106 +57,79 @@ const updateClassroom = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, classroom, "Classroom updated successfully"));
 })
 
-const inviteStudents = asyncHandler(async (req, res) =>{
+// const inviteStudents = asyncHandler(async (req, res) =>{
 
-  const classroom = req.classroom; // Assuming the classroom is attached to the request object by the validateClassroomAccess middleware
-  const { email } = req.body;
+//   const classroom = req.classroom; // Assuming the classroom is attached to the request object by the validateClassroomAccess middleware
+//   const { email } = req.body;
 
-  const invitationCode = classroom.code;
+//   const invitationCode = classroom.code;
   
-  const inviteUrl = `http://localhost:5173/join/:${invitationCode}`;
-  const message = `Join the workspace: ${inviteUrl}`;
+//   const inviteUrl = `http://localhost:5173/join/:${invitationCode}`;
+//   const message = `Join the workspace: ${inviteUrl}`;
 
-  // notification for invited user
-  const inviteUser  = await User.findOne({ email });
-  // console.log("invite user", inviteUser);
+//   // notification for invited user
+//   const inviteUser  = await User.findOne({ email });
+//   // console.log("invite user", inviteUser);
 
-  try{
-    await sendEmail({
-      to : email,
-      subject : "classroom join link",
-      text : message
-    })
-  } catch (error) {
-    console.error("Error sending email:", error);
-  }
+//   try{
+//     await sendEmail({
+//       to : email,
+//       subject : "classroom join link",
+//       text : message
+//     })
+//   } catch (error) {
+//     console.error("Error sending email:", error);
+//   }
 
-  // save the invitation token to the classroom document
-  // classroom.code = invitationCode;
-  // await classroom.save();
+//   // save the invitation token to the classroom document
+//   // classroom.code = invitationCode;
+//   // await classroom.save();
 
 
-  res.status(200).json(new ApiResponse(200, null, "Invitation sent successfully",))
+//   res.status(200).json(new ApiResponse(200, null, "Invitation sent successfully",))
 
-})
+// })
 
-const joinClassroomByEmail = asyncHandler(async (req, res) =>{
-  const {invitationToken} = req.params;
-  const  userId  = req.user._id;
+// const joinClassroomByEmail = asyncHandler(async (req, res) =>{
+//   const {invitationToken} = req.params;
+//   const  userId  = req.user._id;
 
-  if (!invitationToken?.trim()) {
-    throw new ApiError(400, "Invitation token is required");
-  }
+//   if (!invitationToken?.trim()) {
+//     throw new ApiError(400, "Invitation token is required");
+//   }
 
-  //find the classroom by invitation token
-  const classroom = await Classroom.findOne({ code : invitationToken })
+//   //find the classroom by invitation token
+//   const classroom = await Classroom.findOne({ code : invitationToken })
 
-  //check if classroom exist 
-  if (!classroom) {
-    throw new ApiError(404, "Classroom not found");
-  }
+//   //check if classroom exist 
+//   if (!classroom) {
+//     throw new ApiError(404, "Classroom not found");
+//   }
 
-  //check if user alredy exist in classroom
-  const isMember = classroom.students.some((member)=>(member.user.toString() === userId));
+//   //check if user alredy exist in classroom
+//   const isMember = classroom.students.some((member)=>(member.user.toString() === userId));
 
-  if(isMember){
-    throw new ApiError(400, "You are already a member of this classroom");
-  }
+//   if(isMember){
+//     throw new ApiError(400, "You are already a member of this classroom");
+//   }
 
-  // add user to workspace members and save
-  classroom.students.push({ user: userId, role: "student" });
-  await classroom.save();
+//   // add user to workspace members and save
+//   classroom.students.push({ user: userId, role: "student" });
+//   await classroom.save();
 
-  res.status(200).json(new ApiResponse (200, classroom, "You have successfully joined the classroom"));
+//   res.status(200).json(new ApiResponse (200, classroom, "You have successfully joined the classroom"));
 
-})
+// })
 
 const joinClassroom = asyncHandler(async (req, res) =>{
-  const {invitationToken} = req.body
-  const  userId  = req.user._id;
-
-  if (!invitationToken?.trim()) {
-    throw new ApiError(400, "Invitation token is required");
-  }
-
-  //find the classroom by invitation token
-  const classroom = await Classroom.findOne({ code : invitationToken })
-
-  //check if classroom exist 
-  if (!classroom) {
-    throw new ApiError(404, "Classroom not found");
-  }
-
-  //check if user alredy exist in classroom
-  const isMember = classroom.students.some((member)=>(member.user.toString() === userId));
-
-  if(isMember){
-    throw new ApiError(400, "You are already a member of this classroom");
-  }
-
-  // add user to workspace members and save
-  classroom.students.push({ user: userId, role: "student" });
-  await classroom.save();
-
+  const {invitationToken} = req.body;
+  const classroom = joinClassroomService(req.user._id, invitationToken);
   res.status(200).json(new ApiResponse (200, classroom, "You have successfully joined the classroom"));
 
 })
 
 const deleteClassroom = asyncHandler(async (req, res) => {
-  const classroom = req.classroom;
-
-  await classroom.deleteOne();
-
+  await deleteClassroomService(req.classroom); 
   res.status(200).json(new ApiResponse(200, null, "Classroom deleted successfully"));
 })
 
