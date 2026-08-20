@@ -31,6 +31,10 @@ import submissionRouter from "./routes/submission.routes.js";
 import classroomRouter from "./routes/classroom.routes.js";
 import aiRouter from "./routes/ai.routes.js";
 
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is alive 🚀" });
+});
+
 app.use('/api/users', userRoutes);
 app.use('/api/classroom', classroomRouter);
 app.use('/api/assignment', assignmentRouter);
