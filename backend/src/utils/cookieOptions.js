@@ -1,6 +1,6 @@
 export const cookieOptions = {
     httpOnly: true,
     secure: false,
-    sameSite: "None",
+    sameSite: "Lax",
     
   };
